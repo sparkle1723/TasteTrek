@@ -171,7 +171,3 @@ python main.py
 | Carol Chen | `carol@example.com` | `password123` |
 
 ---
-
-## 📄 License
-
-Academic project — IFQ557 Assessment 2
