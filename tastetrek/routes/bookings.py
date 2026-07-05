@@ -18,6 +18,7 @@ def history():
 @bookings_bp.route('/book/<int:event_id>', methods=['POST'])
 @login_required
 def book(event_id):
+    # Validate event exists and is available for booking
     event = Event.query.get_or_404(event_id)
 
     if event.status != 'Open':
