@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="heroCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1600" class="d-block w-100 carousel-img" alt="Food Festival">
+            <div class="carousel-caption d-flex flex-column justify-content-center h-100 pb-0">
+                <h1 class="display-3 fw-bold text-white mb-3">Savor the Moment</h1>
+                <p class="lead text-light mb-4 fs-4">Discover and book the most exclusive culinary events in your city.</p>
+                <div>
+                    <a href="#events" class="btn btn-warning btn-lg px-4 fw-bold rounded-pill">Explore Events</a>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1600" class="d-block w-100 carousel-img" alt="Street Food">
+            <div class="carousel-caption d-flex flex-column justify-content-center h-100 pb-0">
+                <h1 class="display-3 fw-bold text-white mb-3">Authentic Street Food</h1>
+                <p class="lead text-light mb-4 fs-4">Experience the vibrant atmosphere of global night markets.</p>
+                <div>
+                    <a href="#events" class="btn btn-warning btn-lg px-4 fw-bold rounded-pill">Explore Events</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+
+<div class="container my-5" id="events">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4">
+        <div>
+            <h2 class="fw-bold display-6 mb-1">Trending Festivals</h2>
+            <p class="text-muted mb-0">Don't miss out on these upcoming culinary experiences.</p>
+        </div>
+        <div class="mt-3 mt-md-0 d-flex gap-2">
+            <form method="GET" action="{{ url_for('main.index') }}" class="d-flex gap-2 flex-wrap">
+                <select name="category" class="form-select form-select-lg rounded-pill shadow-sm bg-light border-0" onchange="this.form.submit()">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat }}" {{ 'selected' if selected_category == cat }}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+                <div class="input-group" style="max-width: 280px;">
+                    <input type="text" name="search" class="form-control form-control-lg rounded-start-pill shadow-sm bg-light border-0" placeholder="Search events..." value="{{ search }}">
+                    {% if search %}
+                    <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary shadow-sm bg-light border-0">&times;</a>
+                    {% endif %}
+                    <button class="btn btn-warning rounded-end-pill px-3 fw-bold" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if search or selected_category %}
+    <div class="mb-3">
+        <p class="text-muted mb-0">
+            Showing <strong>{{ events|length }}</strong> event{{ 's' if events|length != 1 }}
+            {% if search %}matching "<strong>{{ search }}</strong>"{% endif %}
+            {% if selected_category %}in <strong>{{ selected_category }}</strong>{% endif %}
+            <a href="{{ url_for('main.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill ms-2">Clear Filters</a>
+        </p>
+    </div>
+    {% endif %}
+
+    {% if events %}
+    <div class="row g-4">
+        {% for event in events %}
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden {{ 'opacity-75' if event.status in ('Inactive', 'Cancelled') }}">
+                <div class="position-relative">
+                    <img src="{{ event.image_url or 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600' }}" class="card-img-top" alt="{{ event.title }}">
+                    <div class="position-absolute top-0 start-0 m-3">
+                        {% if event.status == 'Open' %}
+                        <span class="badge bg-success px-3 py-2 rounded-pill shadow-sm">Open</span>
+                        {% elif event.status == 'Sold Out' %}
+                        <span class="badge bg-danger px-3 py-2 rounded-pill shadow-sm">Sold Out</span>
+                        {% elif event.status == 'Inactive' %}
+                        <span class="badge bg-secondary px-3 py-2 rounded-pill shadow-sm">Inactive</span>
+                        {% elif event.status == 'Cancelled' %}
+                        <span class="badge bg-dark px-3 py-2 rounded-pill shadow-sm">Cancelled</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <span class="text-warning fw-bold mb-2">{{ event.category | upper }}</span>
+                    <h4 class="card-title fw-bold mb-3">{{ event.title }}</h4>
+                    <p class="card-text text-muted flex-grow-1">{{ event.description[:100] }}{% if event.description|length > 100 %}...{% endif %}</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                        <small class="text-muted fw-semibold">{{ event.date.strftime('%b %d, %Y') }}</small>
+                        {% if event.status in ('Inactive', 'Sold Out', 'Cancelled') %}
+                        <button class="btn btn-light rounded-pill px-4" disabled>
+                            {% if event.status == 'Inactive' %}Ended{% elif event.status == 'Sold Out' %}Sold Out{% else %}Cancelled{% endif %}
+                        </button>
+                        {% else %}
+                        <a href="{{ url_for('events.detail', event_id=event.id) }}" class="btn btn-dark rounded-pill px-4">View</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="display-1 text-muted mb-3">&#128269;</div>
+        <h4 class="text-muted">No events found</h4>
+        <p class="text-muted mb-1">
+            {% if search and selected_category %}
+            No "<strong>{{ selected_category }}</strong>" events match "<strong>{{ search }}</strong>".
+            {% elif search %}
+            No events match your search for "<strong>{{ search }}</strong>".
+            {% elif selected_category %}
+            No events in the "<strong>{{ selected_category }}</strong>" category yet.
+            {% else %}
+            No events available at the moment.
+            {% endif %}
+        </p>
+        <div class="mt-4">
+            <p class="text-muted small mb-2">Try these categories:</p>
+            <div class="d-flex gap-2 justify-content-center flex-wrap">
+                {% for cat in categories %}
+                <a href="{{ url_for('main.index', category=cat) }}" class="btn btn-outline-warning rounded-pill btn-sm px-4">{{ cat }}</a>
+                {% endfor %}
+                <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary rounded-pill btn-sm px-4">All Events</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

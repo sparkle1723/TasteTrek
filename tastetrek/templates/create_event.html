@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Create Event - TasteTrek{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary mb-3">← Back to Home</a>
+            <h2 class="mb-4 text-center fw-bold">Create a New Food Festival</h2>
+
+            <div class="card shadow-sm rounded-4">
+                <div class="card-body p-4 p-md-5">
+                    <form method="POST" action="{{ url_for('events.create') }}">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.title.label(class="form-label fw-bold") }}
+                            {{ form.title(class="form-control", placeholder="Enter event name") }}
+                            {% for error in form.title.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.category.label(class="form-label fw-bold") }}
+                            {{ form.category(class="form-select") }}
+                            {% for error in form.category.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                {{ form.date.label(class="form-label fw-bold") }}
+                                <div class="small text-muted mb-1">Must be a future date</div>
+                                {{ form.date(class="form-control", min=date.today().strftime('%Y-%m-%d')) }}
+                                {% for error in form.date.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.start_time.label(class="form-label fw-bold") }}
+                                {{ form.start_time(class="form-control", placeholder="e.g. 10:00 AM") }}
+                                {% for error in form.start_time.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.end_time.label(class="form-label fw-bold") }}
+                                {{ form.end_time(class="form-control", placeholder="e.g. 5:00 PM") }}
+                                {% for error in form.end_time.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.venue.label(class="form-label fw-bold") }}
+                            {{ form.venue(class="form-control", placeholder="Enter full address") }}
+                            {% for error in form.venue.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                {{ form.capacity.label(class="form-label fw-bold") }}
+                                <div class="small text-muted mb-1">Total tickets available</div>
+                                {{ form.capacity(class="form-control", placeholder="e.g. 100", type="number", min="1") }}
+                                {% for error in form.capacity.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.image_url.label(class="form-label fw-bold") }}
+                                <div class="small text-muted mb-1">Link to event image (optional)</div>
+                                {{ form.image_url(class="form-control", placeholder="https://images.unsplash.com/...") }}
+                                {% for error in form.image_url.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form.description.label(class="form-label fw-bold") }}
+                            <div class="small text-muted mb-1">Describe what makes this event special</div>
+                            {{ form.description(class="form-control", rows="5", placeholder="Provide details about the event...") }}
+                            {% for error in form.description.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">Publish Event</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

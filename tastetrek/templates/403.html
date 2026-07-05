@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Access Denied - TasteTrek{% endblock %}
+{% block content %}
+<div class="container my-5 text-center">
+    <div class="py-5">
+        <h1 class="display-1 fw-bold text-danger">403</h1>
+        <h2 class="fw-bold mb-3">Access Denied</h2>
+        <p class="lead text-muted mb-4">You don't have permission to access this page. Only the event owner can perform this action.</p>
+        <div class="d-flex gap-2 justify-content-center">
+            <a href="{{ url_for('main.index') }}" class="btn btn-warning btn-lg px-5 rounded-pill">Back to Home</a>
+            <a href="{{ url_for('events.create') }}" class="btn btn-outline-primary btn-lg px-5 rounded-pill">Create Your Own Event</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

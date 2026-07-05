@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title %}{{ event.title }} - TasteTrek{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary mb-3">← Back to Events</a>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <img src="{{ event.image_url or 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1000' }}" class="img-fluid rounded-4 shadow-sm mb-3 w-100" style="max-height: 400px; object-fit: cover;" alt="{{ event.title }}">
+            <div class="mb-2">
+                {% if event.status == 'Open' %}
+                <span class="badge bg-success px-3 py-2 rounded-pill shadow-sm">Open</span>
+                {% elif event.status == 'Sold Out' %}
+                <span class="badge bg-danger px-3 py-2 rounded-pill shadow-sm">Sold Out</span>
+                {% elif event.status == 'Inactive' %}
+                <span class="badge bg-secondary px-3 py-2 rounded-pill shadow-sm">Inactive</span>
+                {% elif event.status == 'Cancelled' %}
+                <span class="badge bg-dark px-3 py-2 rounded-pill shadow-sm">Cancelled</span>
+                {% endif %}
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill shadow-sm">{{ event.category }}</span>
+            </div>
+            <h2 class="fw-bold">{{ event.title }}</h2>
+            <p class="lead">{{ event.description[:200] }}</p>
+
+            <hr class="my-4">
+            <h4 class="fw-bold">About this event</h4>
+            <p>{{ event.description }}</p>
+
+            <div class="mt-5">
+                <h4 class="fw-bold">
+                    Comments
+                    <span class="badge bg-secondary rounded-pill">{{ event.comments|length }}</span>
+                </h4>
+                {% if event.comments %}
+                {% for comment in event.comments %}
+                <div class="card mb-3 bg-light border-0 rounded-3 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="rounded-circle bg-warning text-dark fw-bold d-flex align-items-center justify-content-center me-2"
+                                 style="width: 36px; height: 36px; font-size: 14px;">
+                                {{ comment.author.first_name[0] }}{{ comment.author.surname[0] }}
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">{{ comment.author.first_name }} {{ comment.author.surname }}</h6>
+                                <small class="text-muted">{{ comment.created_at.strftime('%b %d, %Y at %I:%M %p') }}</small>
+                            </div>
+                        </div>
+                        <p class="card-text mb-0 ms-5 ps-1">{{ comment.content }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="text-center py-4 bg-light rounded-3">
+                    <p class="text-muted mb-0">No comments yet. Be the first to share your thoughts!</p>
+                </div>
+                {% endif %}
+
+                {% if current_user.is_authenticated %}
+                <form class="mt-4 border p-4 rounded-4 bg-white shadow-sm" method="POST" action="{{ url_for('events.add_comment', event_id=event.id) }}">
+                    {{ comment_form.hidden_tag() }}
+                    <div class="mb-3">
+                        <label for="content" class="form-label fw-bold">Leave a Comment</label>
+                        {{ comment_form.content(class="form-control", rows="3", placeholder="Share your thoughts...", id="comment-content", oninput="updateCharCount()") }}
+                        <div class="d-flex justify-content-between mt-1">
+                            <div>
+                                {% for error in comment_form.content.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <small class="text-muted" id="char-count">0 / 500</small>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-secondary rounded-pill px-4">Post Comment</button>
+                </form>
+                <script>
+                function updateCharCount() {
+                    var el = document.getElementById('comment-content');
+                    var cnt = document.getElementById('char-count');
+                    if (el && cnt) cnt.textContent = el.value.length + ' / 500';
+                }
+                document.addEventListener('DOMContentLoaded', updateCharCount);
+                </script>
+                {% else %}
+                <div class="alert alert-info mt-4">
+                    <a href="{{ url_for('auth.login') }}">Log in</a> to leave a comment.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm rounded-4 border-0" style="top: 20px;">
+                <div class="card-body p-4">
+                    <h4 class="card-title border-bottom pb-3 mb-3 fw-bold">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-info-circle me-1" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                        </svg>
+                        Event Info
+                    </h4>
+                    <p class="mb-2"><strong>Date:</strong> {{ event.date.strftime('%B %d, %Y') }}</p>
+                    <p class="mb-2"><strong>Time:</strong> {{ event.start_time }} - {{ event.end_time }}</p>
+                    <p class="mb-2"><strong>Venue:</strong> {{ event.venue }}</p>
+                    <p class="mb-4"><strong>Organized by:</strong> {{ event.owner.first_name }} {{ event.owner.surname }}</p>
+
+                    {% if event.status == 'Open' %}
+                    <div class="alert alert-info text-center mb-4">
+                        Tickets Available: <strong>{{ event.tickets_remaining() }}</strong> / {{ event.capacity }}
+                    </div>
+
+                    <div class="alert alert-warning py-2 mb-3 small">
+                        <strong>⚠️ Note:</strong> Max 10 tickets per order. Orders exceeding available tickets cannot be placed.
+                    </div>
+
+                    {% if current_user.is_authenticated %}
+                    <form method="POST" action="{{ url_for('bookings.book', event_id=event.id) }}">
+                        {{ booking_form.hidden_tag() }}
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label fw-bold">Number of Tickets</label>
+                            <input type="number" name="quantity" class="form-control" id="quantity" min="1" max="10" value="1" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold">Book Tickets</button>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <a href="{{ url_for('auth.login') }}">Log in</a> to book tickets.
+                    </div>
+                    {% endif %}
+
+                    {% elif event.status == 'Sold Out' %}
+                    <div class="alert alert-danger text-center">
+                        <strong>Sold Out</strong>
+                        <p class="mb-0 mt-2 small">All tickets have been sold.</p>
+                    </div>
+                    {% elif event.status == 'Cancelled' %}
+                    <div class="alert alert-dark text-center">
+                        <strong>Cancelled</strong>
+                        <p class="mb-0 mt-2 small">This event has been cancelled.</p>
+                    </div>
+                    {% elif event.status == 'Inactive' %}
+                    <div class="alert alert-secondary text-center">
+                        <strong>Inactive</strong>
+                        <p class="mb-0 mt-2 small">This event has already taken place.</p>
+                    </div>
+                    {% endif %}
+
+                    {% if current_user.is_authenticated and current_user.id == event.owner_id %}
+                    <hr>
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('events.update', event_id=event.id) }}" class="btn btn-outline-primary w-100 rounded-pill">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil me-1" viewBox="0 0 16 16">
+                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                            </svg>
+                            Edit
+                        </a>
+                        {% if event.status != 'Cancelled' %}
+                        <form method="POST" action="{{ url_for('events.cancel', event_id=event.id) }}" onsubmit="return confirm('Are you sure you want to cancel this event? This cannot be undone.');" class="d-inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-outline-danger rounded-pill">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle me-1" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                </svg>
+                                Cancel
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

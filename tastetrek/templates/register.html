@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Register - TasteTrek{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary mb-3">← Back to Home</a>
+            <h2 class="mb-4 text-center fw-bold">Create an Account</h2>
+
+            <div class="card shadow-sm rounded-4">
+                <div class="card-body p-4 p-md-5">
+                    <form method="POST" action="{{ url_for('auth.register') }}">
+                        {{ form.hidden_tag() }}
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                {{ form.first_name.label(class="form-label fw-bold") }}
+                                {{ form.first_name(class="form-control", placeholder="First Name") }}
+                                {% for error in form.first_name.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.surname.label(class="form-label fw-bold") }}
+                                {{ form.surname(class="form-control", placeholder="Surname") }}
+                                {% for error in form.surname.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.email.label(class="form-label fw-bold") }}
+                            {{ form.email(class="form-control", placeholder="your@email.com") }}
+                            {% for error in form.email.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.password.label(class="form-label fw-bold") }}
+                            {{ form.password(class="form-control", placeholder="At least 6 characters") }}
+                            {% for error in form.password.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.contact_number.label(class="form-label fw-bold") }}
+                            {{ form.contact_number(class="form-control", placeholder="e.g. 0412 345 678") }}
+                            {% for error in form.contact_number.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form.street_address.label(class="form-label fw-bold") }}
+                            {{ form.street_address(class="form-control", placeholder="Your street address") }}
+                            {% for error in form.street_address.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">Register</button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <small class="text-muted">Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

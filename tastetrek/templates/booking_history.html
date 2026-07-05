@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}My Bookings - TasteTrek{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary mb-3">← Back to Home</a>
+    <h2 class="mb-4 fw-bold">My Booking History</h2>
+
+    {% if bookings %}
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="ps-4">Event Details</th>
+                            <th scope="col">Order ID</th>
+                            <th scope="col" class="text-center">Tickets</th>
+                            <th scope="col">Booking Timestamp</th>
+                            <th scope="col" class="pe-4 text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td class="ps-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ booking.event.image_url or 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=150' }}" class="booking-img me-3 {{ 'opacity-75' if booking.event.status in ('Inactive', 'Cancelled') }}" alt="{{ booking.event.title }}">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">
+                                            {{ booking.event.title }}
+                                            {% if booking.event.status == 'Open' %}
+                                            <span class="badge bg-success ms-2">Confirmed</span>
+                                            {% elif booking.event.status == 'Inactive' %}
+                                            <span class="badge bg-secondary ms-2">Ended</span>
+                                            {% elif booking.event.status == 'Cancelled' %}
+                                            <span class="badge bg-dark ms-2">Cancelled</span>
+                                            {% elif booking.event.status == 'Sold Out' %}
+                                            <span class="badge bg-danger ms-2">Sold Out</span>
+                                            {% endif %}
+                                        </h6>
+                                        <small class="text-muted">{{ booking.event.date.strftime('%b %d, %Y') }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>#{{ booking.id }}</td>
+                            <td class="text-center">{{ booking.quantity }}</td>
+                            <td><small class="text-muted">{{ booking.booking_date.strftime('%b %d, %Y %I:%M %p') }}</small></td>
+                            <td class="pe-4 text-end">
+                                {% if booking.event.status in ('Inactive', 'Cancelled') %}
+                                <button class="btn btn-sm btn-light text-muted" disabled>
+                                    {% if booking.event.status == 'Inactive' %}Ended{% else %}Cancelled{% endif %}
+                                </button>
+                                {% else %}
+                                <a href="{{ url_for('events.detail', event_id=booking.event.id) }}" class="btn btn-sm btn-outline-primary">View Event</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <h4 class="text-muted">No bookings yet</h4>
+        <p class="text-muted">Browse events and book your first tickets!</p>
+        <a href="{{ url_for('main.index') }}" class="btn btn-warning">Explore Events</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

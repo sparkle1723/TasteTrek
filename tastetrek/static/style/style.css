@@ -1,0 +1,91 @@
+body {
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+main {
+    flex: 1;
+}
+
+.carousel-img {
+    height: 60vh;
+    min-height: 400px;
+    object-fit: cover;
+    filter: brightness(0.6);
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15) !important;
+}
+
+.card-img-top {
+    height: 220px;
+    object-fit: cover;
+}
+
+.footer {
+    background-color: #212529;
+    color: #adb5bd;
+    padding: 12px 0;
+    margin-top: 40px;
+}
+
+.booking-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+/* Comment avatar initials */
+.avatar-initials {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Booking confirmation success animation */
+.confirmation-check {
+    animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Smooth scroll for anchor links */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Form validation styling */
+.form-control:focus {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+}
+
+/* Search clear button */
+.btn-clear {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+}

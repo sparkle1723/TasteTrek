@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Login - TasteTrek{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary mb-3">← Back to Home</a>
+            <h2 class="mb-4 text-center fw-bold">Welcome Back</h2>
+
+            <div class="card shadow-sm rounded-4">
+                <div class="card-body p-4 p-md-5">
+                    <form method="POST" action="{{ url_for('auth.login') }}">
+                        {{ form.hidden_tag() }}
+
+                        <div class="mb-3">
+                            {{ form.email.label(class="form-label fw-bold") }}
+                            {{ form.email(class="form-control", placeholder="your@email.com") }}
+                            {% for error in form.email.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form.password.label(class="form-label fw-bold") }}
+                            {{ form.password(class="form-control", placeholder="Your password") }}
+                            {% for error in form.password.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">Log In</button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <small class="text-muted">Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a></small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4 bg-light border-0 rounded-4">
+                <div class="card-body p-3 text-center">
+                    <small class="text-muted fw-bold">Demo Accounts:</small><br>
+                    <small>alice@example.com / password123</small><br>
+                    <small>bob@example.com / password123</small><br>
+                    <small>carol@example.com / password123</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

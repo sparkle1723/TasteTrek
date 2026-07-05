@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Booking Confirmed - TasteTrek{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="text-center mb-4">
+                <div class="display-1 text-success mb-3">&#10003;</div>
+                <h2 class="fw-bold">Booking Confirmed!</h2>
+                <p class="lead text-muted">Thank you, {{ booking.user.first_name }}. Your booking has been confirmed.</p>
+            </div>
+
+            <div class="card shadow-sm rounded-4 border-0">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold border-bottom pb-3 mb-3">Order Summary</h5>
+
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{{ booking.event.image_url or 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=100' }}"
+                             class="rounded-3 me-3" style="width: 80px; height: 80px; object-fit: cover;" alt="{{ booking.event.title }}">
+                        <div>
+                            <h6 class="fw-bold mb-1">{{ booking.event.title }}</h6>
+                            <small class="text-muted">{{ booking.event.date.strftime('%B %d, %Y') }} &middot; {{ booking.event.venue }}</small>
+                        </div>
+                    </div>
+
+                    <table class="table table-borderless mb-0">
+                        <tr>
+                            <td class="ps-0 text-muted">Order ID</td>
+                            <td class="pe-0 text-end fw-bold">#{{ booking.id }}</td>
+                        </tr>
+                        <tr>
+                            <td class="ps-0 text-muted">Tickets</td>
+                            <td class="pe-0 text-end fw-bold">{{ booking.quantity }}</td>
+                        </tr>
+                        <tr>
+                            <td class="ps-0 text-muted">Status</td>
+                            <td class="pe-0 text-end"><span class="badge bg-success">Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td class="ps-0 text-muted">Booked On</td>
+                            <td class="pe-0 text-end fw-bold">{{ booking.booking_date.strftime('%b %d, %Y at %I:%M %p') }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4 justify-content-center">
+                <a href="{{ url_for('events.detail', event_id=booking.event.id) }}" class="btn btn-outline-primary rounded-pill px-4">View Event</a>
+                <a href="{{ url_for('bookings.history') }}" class="btn btn-primary rounded-pill px-4">My Bookings</a>
+                <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary rounded-pill px-4">Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
