@@ -1,3 +1,20 @@
+# Documents
+*.pdf
+*.doc
+*.docx
+
+# Videos
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.wmv
+
+# Python
+__pycache__/
+
+# Database
+instance/
 assignment2 Group Declaration Template.docx
 TasteTrek.mp4
 __pycache__/
